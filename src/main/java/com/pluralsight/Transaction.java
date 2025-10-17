@@ -12,7 +12,7 @@ public class Transaction {
     private String vendor;
     private double amount;
 
-    public Transaction(LocalDate data, LocalTime time, String description, String vendor, double amount) {
+    public Transaction(LocalDate date, LocalTime time, String description, String vendor, double amount) {
         this.date = date;
         this.time = time;
         this.description = description;
@@ -46,4 +46,3 @@ public class Transaction {
         return s.substring(0, max -3) + "...";
         }
     }
-}
