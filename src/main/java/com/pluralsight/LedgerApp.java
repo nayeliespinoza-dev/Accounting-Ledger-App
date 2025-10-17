@@ -19,18 +19,18 @@ public class LedgerApp {
         while (running) {
             showMenu();
             String choice = scanner.nextLine().trim();
-            switch (choice) {
-                case "1":
+            switch (choice.toUpperCase()) {
+                case "D":
                     addDeposit();
                     break;
-                case "2":
+                case "P":
                     makePayment();
                     break;
-                case "3":
-                    displayLedger();
+                case "L":
+                    showLedgerMenu();
                     break;
-                case "4":
-                    System.out.println("Exiting. Goodbye!");
+                case "X":
+                    System.out.println("Exiting out of the app. Have a good day!");
                     running = false;
                     break;
                 default:
@@ -43,11 +43,11 @@ public class LedgerApp {
 
     private void showMenu() {
         System.out.println();
-        System.out.println("    Accounting Ledger    ");
-        System.out.println("1. Add Deposit");
-        System.out.println("2. Make Payment (Debit)");
-        System.out.println("3. Display Ledger");
-        System.out.println("4. Exit");
+        System.out.println("=== Home Screen ===");
+        System.out.println("D. Add Deposit");
+        System.out.println("P. Make Payment (Debit)");
+        System.out.println("L. Display Ledger");
+        System.out.println("X. Exit");
         System.out.print("Select an option: ");
     }
 
@@ -78,7 +78,8 @@ public class LedgerApp {
         System.out.println("Vendor: ");
         String vendor = scanner.nextLine().trim();
 
-        double amount = readPositiveAmount("Amount (positive) -> will be recorded as a payment: ");
+        System.out.print("Amount (positive): ");
+        double amount = Double.parseDouble(scanner.nextLine().trim());
 
         Transaction t = new Transaction(LocalDate.now(), LocalTime.now(), description, vendor, -amount);
         transactions.add(t);
@@ -122,5 +123,75 @@ public class LedgerApp {
 
         System.out.println("--------------------------------------------------------------------------------------------");
         System.out.printf("Current Balance: $%.2f\n", balance);
+    }
+
+    private void showLedgerMenu() {
+        boolean inLedgerMenu = true;
+        while (inLedgerMenu) {
+            System.out.println();
+            System.out.println("=== Ledger Screen===");
+            System.out.println("A. All");
+            System.out.println("D. Deposits");
+            System.out.println("P. Payments");
+            System.out.println("H. Home");
+            System.out.print("Select an option: ");
+
+            String choice = scanner.nextLine().trim().toUpperCase();
+
+            switch (choice) {
+                case "A":
+                    displayAll();
+                    break;
+                case "D":
+                    displayDeposits();
+                    break;
+                case "P":
+                    displayPayments();
+                    break;
+                case "H":
+                    inLedgerMenu = false;
+                    break;
+                default:
+                    System.out.println("Invalid option. Please enter A, D, P, or H.");
+            }
         }
     }
+
+    private void displayAll(){
+        System.out.println("\n--- All Transactions ---");
+        if (transactions.isEmpty()){
+            System.out.println("No transactions recorded yet.");
+            return;
+        }
+
+        for (int i = transactions.size()-1; i >= 0; i--) {
+            System.out.println(transactions.get(i));
+        }
+    }
+
+    private void displayDeposits(){
+        System.out.println("\n--- Deposits ---");
+        boolean found = false;
+        for (int i = transactions.size()- 1; i >= 0; i--) {
+            Transaction t = transactions.get(i);
+            if (t.getAmount() > 0) {
+                System.out.println(t);
+                found = true;
+            }
+        }
+        if (!found) System.out.println("No deposits found.");
+    }
+
+    private void displayPayments() {
+        System.out.println("\n--- Payments ---");
+        boolean found = false;
+        for (int i = transactions. size() - 1; i >= 0; i--) {
+            Transaction t = transactions.get(i);
+            if (t.getAmount() < 0) {
+                System.out.println(t);
+                found = true;
+            }
+        }
+        if (!found) System.out.println("No payments found.");
+    }
+}
