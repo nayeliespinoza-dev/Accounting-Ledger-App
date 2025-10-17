@@ -1,6 +1,8 @@
 
 package com.pluralsight;
 
+// This demonstrates a single transaction entry which includes the date, time, description,
+// vendor, and amount. Positive amounts represent deposits and negative amounts represent payments.
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;

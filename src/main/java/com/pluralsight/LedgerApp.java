@@ -1,5 +1,10 @@
 package com.pluralsight;
 
+// Capstone Project - Accounting Ledger
+// This is an application that lets people record their deposits and payments,
+// view their ledger, and view reports for transactions from month to date, previous month,
+// and search specific vendors.
+
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -58,11 +63,11 @@ public class LedgerApp {
             while ((line = reader.readLine()) != null) {
                 String[] parts = line.split(",");
                 if (parts.length == 5) {
-                    LocalDate date = LocalDate.parse(parts[0]);
-                    LocalTime time = LocalTime.parse(parts[1]);
-                    String description = parts[2];
-                    String vendor = parts[3];
-                    double amount = Double.parseDouble(parts[4]);
+                    LocalDate date = LocalDate.parse(parts[0].trim());
+                    LocalTime time = LocalTime.parse(parts[1].trim());
+                    String description = parts[2].trim();
+                    String vendor = parts[3].trim();
+                    double amount = Double.parseDouble(parts[4].trim());
                     transactions.add(new Transaction(date, time, description, vendor, amount));
                 }
             }
