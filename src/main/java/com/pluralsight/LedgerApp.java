@@ -133,6 +133,7 @@ public class LedgerApp {
             System.out.println("A. All");
             System.out.println("D. Deposits");
             System.out.println("P. Payments");
+            System.out.println("R. Reports");
             System.out.println("H. Home");
             System.out.print("Select an option: ");
 
@@ -148,6 +149,9 @@ public class LedgerApp {
                 case "P":
                     displayPayments();
                     break;
+                case "R":
+                    showReportsMenu();
+                    break;
                 case "H":
                     inLedgerMenu = false;
                     break;
@@ -157,22 +161,22 @@ public class LedgerApp {
         }
     }
 
-    private void displayAll(){
+    private void displayAll() {
         System.out.println("\n--- All Transactions ---");
-        if (transactions.isEmpty()){
+        if (transactions.isEmpty()) {
             System.out.println("No transactions recorded yet.");
             return;
         }
 
-        for (int i = transactions.size()-1; i >= 0; i--) {
+        for (int i = transactions.size() - 1; i >= 0; i--) {
             System.out.println(transactions.get(i));
         }
     }
 
-    private void displayDeposits(){
+    private void displayDeposits() {
         System.out.println("\n--- Deposits ---");
         boolean found = false;
-        for (int i = transactions.size()- 1; i >= 0; i--) {
+        for (int i = transactions.size() - 1; i >= 0; i--) {
             Transaction t = transactions.get(i);
             if (t.getAmount() > 0) {
                 System.out.println(t);
@@ -185,7 +189,7 @@ public class LedgerApp {
     private void displayPayments() {
         System.out.println("\n--- Payments ---");
         boolean found = false;
-        for (int i = transactions. size() - 1; i >= 0; i--) {
+        for (int i = transactions.size() - 1; i >= 0; i--) {
             Transaction t = transactions.get(i);
             if (t.getAmount() < 0) {
                 System.out.println(t);
@@ -193,5 +197,64 @@ public class LedgerApp {
             }
         }
         if (!found) System.out.println("No payments found.");
+    }
+
+    private void showReportsMenu() {
+        boolean inReportsMenu = true;
+        while (inReportsMenu) {
+            System.out.println();
+            System.out.println("=== Reports menu ===");
+            System.out.println("1. Month To Date");
+            System.out.println("2. Previous Month");
+            System.out.println("3. Year to Date");
+            System.out.println("4. Previous Year");
+            System.out.println("0. Back");
+            System.out.print("Select an option: ");
+
+            String choice = scanner.nextLine().trim();
+
+            switch (choice) {
+                case "1":
+                    showMonthToDate();
+                    break;
+                case "2":
+                    showPreviousMonth();
+                    break;
+                case "3":
+                    showYearToDate();
+                    break;
+                case "4":
+                    showPreviousYear();
+                    break;
+                case "5":
+                    searchByVendor();
+                    break;
+                case "0":
+                    inReportsMenu = false;
+                    break;
+                default:
+                    System.out.println("Invalid choice. Please enter 1-5 or 0 to go back.");
+            }
+        }
+    }
+
+    private void showMonthToDate(){
+        System.out.println("\n--- Month To Date Report ---");
+    }
+
+    private void showPreviousMonth(){
+        System.out.println("\n---Previous Month Report---");
+    }
+
+    private void showYearToDate(){
+        System.out.println("\n--- Year to Date Report---");
+    }
+
+    private void showPreviousYear(){
+        System.out.println("\n--- Previous Year Report---");
+    }
+
+    private void searchByVendor() {
+        System.out.println("\n--- Search by Vendor ---");
     }
 }
