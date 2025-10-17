@@ -280,13 +280,58 @@ public class LedgerApp {
 
     private void showYearToDate(){
         System.out.println("\n--- Year to Date Report---");
+        LocalDate today = LocalDate.now();
+        LocalDate firstDayOfYear = today.withDayOfYear(1);
+
+        boolean found = false;
+        for (int i = transactions.size() - 1; i >= 0; i--) {
+            Transaction t = transactions.get(i);
+            if (!t.getDate().isBefore(firstDayOfYear) && !t.getDate().isAfter(today)){
+                System.out.println(t);
+                found = true;
+            }
+        }
+
+        if (!found) {
+            System.out.println("No transactions for the current year.");
+        }
     }
 
     private void showPreviousYear(){
         System.out.println("\n--- Previous Year Report---");
+        LocalDate today = LocalDate.now();
+        int previousYear = today.getYear() - 1;
+
+        boolean found = false;
+        for (int i = transactions.size() - 1; i >= 0; i--) {
+            Transaction t = transactions.get(i);
+            if (t.getDate().getYear() == previousYear){
+                System.out.println(t);
+                found = true;
+            }
+        }
+
+        if (!found) {
+            System.out.println("No transactions for the previous year.");
+        }
     }
 
     private void searchByVendor() {
         System.out.println("\n--- Search by Vendor ---");
+        System.out.println("Enter vendor name: ");
+        String vendor = scanner.nextLine().trim().toLowerCase();
+
+        boolean found = false;
+        for (int i = transactions.size() - 1; i >= 0; i--) {
+            Transaction t = transactions.get(i);
+            if (t.getVendor().toLowerCase().contains(vendor)){
+                System.out.println(t);
+                found = true;
+            }
+        }
+
+        if (!found) {
+            System.out.println("No transactions found for vendor: " + vendor);
+        }
     }
 }
