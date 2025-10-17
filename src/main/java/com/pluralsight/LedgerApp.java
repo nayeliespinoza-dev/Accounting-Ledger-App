@@ -3,11 +3,15 @@ package com.pluralsight;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Scanner;
+import java.io.*;
+import java.time.format.DateTimeFormatter;
 
 public class LedgerApp {
     private ArrayList<Transaction> transactions = new ArrayList<>();
     private Scanner scanner = new Scanner(System.in);
+    private static final String FILE_NAME = "transactions.csv";
 
     public static void main(String[] args) {
         LedgerApp app = new LedgerApp();
@@ -16,6 +20,7 @@ public class LedgerApp {
 
     public void run() {
         boolean running = true;
+        loadTransactions();
         while (running) {
             showMenu();
             String choice = scanner.nextLine().trim();
@@ -39,6 +44,49 @@ public class LedgerApp {
             }
         }
         scanner.close();
+    }
+
+    private void loadTransactions(){
+        File file = new File(FILE_NAME);
+        if (!file.exists()) {
+            return;
+        }
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+            String line;
+            reader.readLine();
+            while ((line = reader.readLine()) != null) {
+                String[] parts = line.split(",");
+                if (parts.length == 5) {
+                    LocalDate date = LocalDate.parse(parts[0]);
+                    LocalTime time = LocalTime.parse(parts[1]);
+                    String description = parts[2];
+                    String vendor = parts[3];
+                    double amount = Double.parseDouble(parts[4]);
+                    transactions.add(new Transaction(date, time, description, vendor, amount));
+                }
+            }
+        } catch (IOException e) {
+            System.out.println("Error loading transactions: " + e.getMessage());
+        }
+    }
+
+    private void saveTransactions() {
+        try (PrintWriter writer = new PrintWriter(new FileWriter(FILE_NAME))) {
+            writer.println("date, time, description, vendor, amount");
+            DateTimeFormatter timeFmt = DateTimeFormatter.ofPattern("HH:mm:ss");
+
+            for (Transaction t : transactions) {
+                writer.printf("%s, %s, %s, %s, %.2f%n",
+                        t.getDate(),
+                        timeFmt.format(t.getTime()),
+                        t.getDescription(),
+                        t.getVendor(),
+                        t.getAmount());
+            }
+        } catch (IOException e){
+            System.out.println("Error saving transactions: " + e.getMessage());
+        }
     }
 
     private void showMenu() {
@@ -66,6 +114,7 @@ public class LedgerApp {
         Transaction t = new Transaction(LocalDate.now(), LocalTime.now(), description, vendor, amount);
         transactions.add(t);
         System.out.printf("Deposit of $%.2f added.\n", amount);
+        saveTransactions();
     }
 
 // Method for making a payment
@@ -84,6 +133,7 @@ public class LedgerApp {
         Transaction t = new Transaction(LocalDate.now(), LocalTime.now(), description, vendor, -amount);
         transactions.add(t);
         System.out.printf("Payment of $%.2f recorded.\n", amount);
+        saveTransactions();
     }
 
     private double readPositiveAmount(String prompt) {
