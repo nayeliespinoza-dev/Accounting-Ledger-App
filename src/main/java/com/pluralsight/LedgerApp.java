@@ -240,10 +240,42 @@ public class LedgerApp {
 
     private void showMonthToDate(){
         System.out.println("\n--- Month To Date Report ---");
+        LocalDate today = LocalDate.now();
+        LocalDate firstDayOfMonth = today.withDayOfMonth(1);
+
+        boolean found = false;
+        for (int i = transactions.size() - 1; i >= 0; i--) {
+            Transaction t = transactions.get(i);
+            if (!t.getDate().isBefore(firstDayOfMonth) && !t.getDate().isAfter(today)){
+                System.out.println(t);
+                found = true;
+            }
+        }
+
+        if (!found) {
+            System.out.println("No transactions for the current month.");
+        }
     }
 
     private void showPreviousMonth(){
         System.out.println("\n---Previous Month Report---");
+        LocalDate today = LocalDate.now();
+        LocalDate firstDayOfPreviousMonth = today.minusMonths(1).withDayOfMonth(1);
+        LocalDate lastDayOfPreviousMonth = firstDayOfPreviousMonth.withDayOfMonth(firstDayOfPreviousMonth.lengthOfMonth());
+
+        boolean found = false;
+        for (int i = transactions.size() - 1; i >= 0; i--) {
+            Transaction t = transactions.get(i);
+            LocalDate date = t.getDate();
+            if (!date.isBefore(firstDayOfPreviousMonth) && !date.isAfter(lastDayOfPreviousMonth)) {
+                System.out.println(t);
+                found = true;
+            }
+        }
+
+        if (!found) {
+            System.out.println("No transactions for the previous month.");
+        }
     }
 
     private void showYearToDate(){
